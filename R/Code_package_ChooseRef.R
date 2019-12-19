@@ -1,5 +1,22 @@
 #
 
+#' Title
+#' @description Calcul de l'erreur standard
+#' 
+#' @param RELEVES  -
+#' @param REF -
+#' @param DISTANCES r
+#' @param METHOD r
+#' @param COUL_RELEVES r
+#' @param COUL_Rel_variable r
+#' @param COUL_REF r
+#' @param COUL_Seg r
+#' @param COUL_Seg_variable r
+#' @param CHOIX_NOMBRE r
+#' @param N_REF r
+#' @param DIST_MIN r
+#' @param VAL_DIST r
+#' @param DECAL r
 Diss_Ref_Plot <- function(RELEVES, REF, DISTANCES,
                           METHOD = "euclidean",
                           COUL_RELEVES = 2, COUL_Rel_variable = TRUE,
@@ -79,3 +96,4 @@ Diss_Ref_Plot <- function(RELEVES, REF, DISTANCES,
 
     }
   }
+}
