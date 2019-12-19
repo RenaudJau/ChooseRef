@@ -97,3 +97,7 @@ Diss_Ref_Plot <- function(RELEVES, REF, DISTANCES,
     }
   }
 }
+
+library(devtools)
+install_github("RenaudJau/ChooseRef")
+?Diss_Ref_Plot
