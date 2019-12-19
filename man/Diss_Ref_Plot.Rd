@@ -2,7 +2,7 @@
 % Please edit documentation in R/Code_package_ChooseRef.R
 \name{Diss_Ref_Plot}
 \alias{Diss_Ref_Plot}
-\title{Title}
+\title{Plot of references and restoration site dissimilarities}
 \usage{
 Diss_Ref_Plot(
   RELEVES,
@@ -22,34 +22,34 @@ Diss_Ref_Plot(
 )
 }
 \arguments{
-\item{RELEVES}{-}
+\item{RELEVES}{Variables of the restoration sites data matrix}
 
-\item{REF}{-}
+\item{REF}{Variables of reference sites data matrix}
 
-\item{DISTANCES}{r}
+\item{DISTANCES}{Object resulting from the analysis of the \code{\link{ChosseRef::DissRef3}} function.}
 
-\item{METHOD}{r}
+\item{METHOD}{Dissimilarity index, partial match to "manhattan", "euclidean", "canberra", "clark", "bray", "kulczynski", "jaccard", "gower", "altGower", "morisita", "horn", "mountford", "raup", "binomial", "chao", "cao" or "mahalanobis". Cf \code{\link{vegan::vegdist}} function}
 
-\item{COUL_RELEVES}{r}
+\item{COUL_RELEVES}{Color of RELEVES names}
 
-\item{COUL_Rel_variable}{r}
+\item{COUL_Rel_variable}{If TRUE: color change for each RELEVES}
 
-\item{COUL_REF}{r}
+\item{COUL_REF}{Color of REF names}
 
-\item{COUL_Seg}{r}
+\item{COUL_Seg}{Color of links}
 
-\item{COUL_Seg_variable}{r}
+\item{COUL_Seg_variable}{If TRUE: color change for each link}
 
-\item{CHOIX_NOMBRE}{r}
+\item{CHOIX_NOMBRE}{Display of the reference number \code{N_REF} or display of the distance value \code{DIST_MIN}.}
 
-\item{N_REF}{r}
+\item{N_REF}{Number of REF to display a link between REF and RELEVES}
 
-\item{DIST_MIN}{r}
+\item{DIST_MIN}{Minimum distance value to display a link between REF and RELEVES}
 
-\item{VAL_DIST}{r}
+\item{VAL_DIST}{Distance value display}
 
-\item{DECAL}{r}
+\item{DECAL}{Distance between the printing of the distance and the link}
 }
 \description{
-Calcul de l'erreur standard
+Display similarity link (previously calculated with \code{\link{ChosseRef::DissRef3}} function) between plots and a group of reference plot
 }
