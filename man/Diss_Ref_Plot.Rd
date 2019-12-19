@@ -14,7 +14,7 @@ Diss_Ref_Plot(
   COUL_REF = 1,
   COUL_Seg = "#9C8809",
   COUL_Seg_variable = TRUE,
-  CHOIX_NOMBRE = "absent",
+  LINK_NUMBER = "absent",
   N_REF = "absent",
   DIST_MIN = "absent",
   VAL_DIST = TRUE,
@@ -38,18 +38,47 @@ Diss_Ref_Plot(
 
 \item{COUL_Seg}{Color of links}
 
-\item{COUL_Seg_variable}{If TRUE: color change for each link}
+\item{COUL_Seg_variable}{If TRUE: colors change for each link}
 
-\item{CHOIX_NOMBRE}{Display of the reference number \code{N_REF} or display of the distance value \code{DIST_MIN}.}
+\item{LINK_NUMBER}{Number of link drawn. If "N_REF" then for each RELEVES, the number of link drawn is the number given in \code{N_REF}. If "DIST_MIN"
+only reference that have distance to restoration sites lower than the value given in \code{DIST_MIN} are drawn.}
 
 \item{N_REF}{Number of REF to display a link between REF and RELEVES}
 
-\item{DIST_MIN}{Minimum distance value to display a link between REF and RELEVES}
+\item{DIST_MIN}{Minimum distance value to draw a link between REF and RELEVES}
 
-\item{VAL_DIST}{Distance value display}
+\item{VAL_DIST}{Providing or not (TRUE by default) the distance value display}
 
 \item{DECAL}{Distance between the printing of the distance and the link}
 }
 \description{
 Display similarity link (previously calculated with \code{\link{ChosseRef::DissRef3}} function) between plots and a group of reference plot
+}
+\examples{
+# ------------  Creating the data needed for the example --------------------
+library(vegan)
+data("dune") #downloading of dune data (cf vegan)
+data("dune.env") #downloading of dune.env data (cf vegan)
+# keeping only the numeric variables :
+dune.env <- data.frame(A1 = dune.env$A1, 
+                       Moisture =  as.numeric(as.vector(dune.env$Moisture)),
+                       Manure = as.numeric(as.vector(dune.env$Manure)))
+                                          
+# Creating a vector indicating which plots are the potential references and which ones are the restored sites
+sites <- factor(c(rep("Rest",5),rep("Ref",15)))
+# Creating a vector with the plot names
+sites_names <- paste(sites,c(1:5,1:15))
+
+#Poviding names to rows (useful for the outputs)
+row.names(dune.env) <- sites_names
+row.names(dune) <- sites_names
+dune.envRest <- dune.env[sites=="Rest",]
+dune.envRef <- dune.env[sites=="Ref",]
+
+# --------------  Calculating reference dissimilarities ---------------------
+Distances <- DissRef3(RELEVES = dune.envRest, REF = dune.envRef, METHOD = "euclidean", DUPLICATES = FALSE)
+Distances
+
+# ----------------  Plotting reference dissimilarities ----------------------
+Diss_Ref_Plot(RELEVES = dune.envRest, REF = dune.envRef, DISTANCES = Distances, LINK_NUMBER = "N_REF", N_REF = 3)
 }

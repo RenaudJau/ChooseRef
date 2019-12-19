@@ -4,7 +4,7 @@
 \alias{DissRef3}
 \title{Similarities between references and restoration}
 \usage{
-DissRef3(RELEVES, REF, METHOD = "bray", BINARY = FALSE, DOUBLONS = TRUE)
+DissRef3(RELEVES, REF, METHOD = "bray", BINARY = FALSE, DUPLICATES = TRUE)
 }
 \arguments{
 \item{RELEVES}{Variables of the restoration sites data matrix}
@@ -15,7 +15,7 @@ DissRef3(RELEVES, REF, METHOD = "bray", BINARY = FALSE, DOUBLONS = TRUE)
 
 \item{BINARY}{(FALSE by default) If TRUE, data is converted to binary data}
 
-\item{DOUBLONS}{(TRUE by default) Are REF plots also included in RELEVES data?}
+\item{DUPLICATES}{(TRUE by default) Are REF plots also included in RELEVES data?}
 }
 \value{
 \item{Diss_Mean}{average dissimilarity by RELEVES}
@@ -28,4 +28,32 @@ DissRef3(RELEVES, REF, METHOD = "bray", BINARY = FALSE, DOUBLONS = TRUE)
 }
 \description{
 Calculate similarity between plots and a group of reference plot
+}
+\examples{
+# ------------  Creating the data needed for the example --------------------
+library(vegan)
+data("dune") #downloading of dune data (cf vegan)
+data("dune.env") #downloading of dune.env data (cf vegan)
+# keeping only the numeric variables :
+dune.env <- data.frame(A1 = dune.env$A1, 
+                       Moisture =  as.numeric(as.vector(dune.env$Moisture)),
+                       Manure = as.numeric(as.vector(dune.env$Manure)))
+                                          
+# Creating a vector indicating which plots are the potential references and which ones are the restored sites
+sites <- factor(c(rep("Rest",5),rep("Ref",15)))
+# Creating a vector with the plot names
+sites_names <- paste(sites,c(1:5,1:15))
+
+#Poviding names to rows (useful for the outputs)
+row.names(dune.env) <- sites_names
+row.names(dune) <- sites_names
+dune.envRest <- dune.env[sites=="Rest",]
+dune.envRef <- dune.env[sites=="Ref",]
+
+# --------------  Calculating reference dissimilarities ---------------------
+Distances <- DissRef3(RELEVES = dune.envRest, REF = dune.envRef, METHOD = "euclidean", DUPLICATES = FALSE)
+Distances
+
+# ----------------  Plotting reference dissimilarities ----------------------
+Diss_Ref_Plot(RELEVES = dune.envRest, REF = dune.envRef, DISTANCES = Distances, LINK_NUMBER = "N_REF", N_REF = 3)
 }

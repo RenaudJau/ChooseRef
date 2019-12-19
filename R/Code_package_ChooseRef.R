@@ -1,8 +1,5 @@
 ########### Fonctions du package ChooseRef ######################
 
-
-
-
 #' Similarities between references and restoration
 #' 
 #' @description Calculate similarity between plots and a group of reference plot
@@ -11,16 +8,43 @@
 #' @param REF Variables surveys of reference sites data matrix
 #' @param METHOD Dissimilarity index, partial match to "manhattan", "euclidean", "canberra", "clark", "bray", "kulczynski", "jaccard", "gower", "altGower", "morisita", "horn", "mountford", "raup", "binomial", "chao", "cao" or "mahalanobis". Cf \code{\link{vegan::vegdist}} function 
 #' @param BINARY (FALSE by default) If TRUE, data is converted to binary data
-#' @param DOUBLONS (TRUE by default) Are REF plots also included in RELEVES data?
+#' @param DUPLICATES (TRUE by default) Are REF plots also included in RELEVES data?
 #' 
 #' @return \item{Diss_Mean}{average dissimilarity by RELEVES}
 #' @return \item{Diss_Min}{minimal dissimilarity by RELEVES}
 #' @return \item{RelRef_order}{list of REF names in ascending order of dissimilarity for each RELEVES}
 #' @return \item{DistRef_order}{list of REF distance values in ascending order of dissimilarity for each RELEVES}
-DissRef3 <- function (RELEVES, REF, METHOD = "bray", BINARY = FALSE, DOUBLONS = TRUE)
+#' 
+#' @examples # ------------  Creating the data needed for the example --------------------
+#' library(vegan)
+#' data("dune") #downloading of dune data (cf vegan)
+#' data("dune.env") #downloading of dune.env data (cf vegan)
+#' # keeping only the numeric variables :
+#' dune.env <- data.frame(A1 = dune.env$A1, 
+#'                        Moisture =  as.numeric(as.vector(dune.env$Moisture)),
+#'                        Manure = as.numeric(as.vector(dune.env$Manure)))
+#'                                           
+#' # Creating a vector indicating which plots are the potential references and which ones are the restored sites
+#' sites <- factor(c(rep("Rest",5),rep("Ref",15)))
+#' # Creating a vector with the plot names
+#' sites_names <- paste(sites,c(1:5,1:15))
+#'
+#' #Poviding names to rows (useful for the outputs)
+#' row.names(dune.env) <- sites_names
+#' row.names(dune) <- sites_names
+#' dune.envRest <- dune.env[sites=="Rest",]
+#' dune.envRef <- dune.env[sites=="Ref",]
+#' 
+#' # --------------  Calculating reference dissimilarities ---------------------
+#' Distances <- DissRef3(RELEVES = dune.envRest, REF = dune.envRef, METHOD = "euclidean", DUPLICATES = FALSE)
+#' Distances
+#' 
+#' # ----------------  Plotting reference dissimilarities ----------------------
+#' Diss_Ref_Plot(RELEVES = dune.envRest, REF = dune.envRef, DISTANCES = Distances, LINK_NUMBER = "N_REF", N_REF = 3)
+DissRef3 <- function (RELEVES, REF, METHOD = "bray", BINARY = FALSE, DUPLICATES = TRUE)
 {
   # Fusion of tables:
-  if(all.equal(names(RELEVES),names(REF))!=TRUE){warning("The two tables do not have the same species")}
+  if(all.equal(names(RELEVES),names(REF))!=TRUE){warning("The two tables do not have the same variables")}
   Tableaux <- rbind(RELEVES,REF)
   
   # Dissimilarity matrix:
@@ -44,9 +68,9 @@ DissRef3 <- function (RELEVES, REF, METHOD = "bray", BINARY = FALSE, DOUBLONS = 
     # Ref distances (from the distance matrix)
     diss_qn <- matrice[i,c((nrow(RELEVES)+1):(nrow(RELEVES)+nrow(REF)))]
     
-    # ‘if’ & ‘else’: to delete a zero in the distance matrix when there is a duplicate of data in RELEVES and in REF (in this case set DOUBLONS = TRUE) and we have a value 0 between the RELEVES i and at  least one of REF
+    # ‘if’ & ‘else’: to delete a zero in the distance matrix when there is a duplicate of data in RELEVES and in REF (in this case set DUPLICATES = TRUE) and we have a value 0 between the RELEVES i and at  least one of REF
     
-    if(DOUBLONS==TRUE & min(diss_qn)==0)
+    if(DUPLICATES==TRUE & min(diss_qn)==0)
     {
       diss_qnw0_2 <- diss_qn[-c(1:length(diss_qn))[diss_qn==0][1]]
     } else {
@@ -85,90 +109,117 @@ DissRef3 <- function (RELEVES, REF, METHOD = "bray", BINARY = FALSE, DOUBLONS = 
 #' @param COUL_Rel_variable If TRUE: color change for each RELEVES
 #' @param COUL_REF Color of REF names
 #' @param COUL_Seg Color of links
-#' @param COUL_Seg_variable If TRUE: color change for each link
-#' @param CHOIX_NOMBRE Display of the reference number \code{N_REF} or display of the distance value \code{DIST_MIN}.
+#' @param COUL_Seg_variable If TRUE: colors change for each link
+#' @param LINK_NUMBER Number of link drawn. If "N_REF" then for each RELEVES, the number of link drawn is the number given in \code{N_REF}. If "DIST_MIN"
+#' only reference that have distance to restoration sites lower than the value given in \code{DIST_MIN} are drawn.
 #' @param N_REF Number of REF to display a link between REF and RELEVES
-#' @param DIST_MIN Minimum distance value to display a link between REF and RELEVES
-#' @param VAL_DIST Distance value display
+#' @param DIST_MIN Minimum distance value to draw a link between REF and RELEVES
+#' @param VAL_DIST Providing or not (TRUE by default) the distance value display
 #' @param DECAL Distance between the printing of the distance and the link
+#' 
+#' @examples # ------------  Creating the data needed for the example --------------------
+#' library(vegan)
+#' data("dune") #downloading of dune data (cf vegan)
+#' data("dune.env") #downloading of dune.env data (cf vegan)
+#' # keeping only the numeric variables :
+#' dune.env <- data.frame(A1 = dune.env$A1, 
+#'                        Moisture =  as.numeric(as.vector(dune.env$Moisture)),
+#'                        Manure = as.numeric(as.vector(dune.env$Manure)))
+#'                                           
+#' # Creating a vector indicating which plots are the potential references and which ones are the restored sites
+#' sites <- factor(c(rep("Rest",5),rep("Ref",15)))
+#' # Creating a vector with the plot names
+#' sites_names <- paste(sites,c(1:5,1:15))
+#'
+#' #Poviding names to rows (useful for the outputs)
+#' row.names(dune.env) <- sites_names
+#' row.names(dune) <- sites_names
+#' dune.envRest <- dune.env[sites=="Rest",]
+#' dune.envRef <- dune.env[sites=="Ref",]
+#' 
+#' # --------------  Calculating reference dissimilarities ---------------------
+#' Distances <- DissRef3(RELEVES = dune.envRest, REF = dune.envRef, METHOD = "euclidean", DUPLICATES = FALSE)
+#' Distances
+#' 
+#' # ----------------  Plotting reference dissimilarities ----------------------
+#' Diss_Ref_Plot(RELEVES = dune.envRest, REF = dune.envRef, DISTANCES = Distances, LINK_NUMBER = "N_REF", N_REF = 3)
 Diss_Ref_Plot <- function(RELEVES, REF, DISTANCES,
                           METHOD = "euclidean",
                           COUL_RELEVES = 2, COUL_Rel_variable = TRUE,
                           COUL_REF = 1,
                           COUL_Seg = "#9C8809", COUL_Seg_variable = TRUE,
-                          CHOIX_NOMBRE="absent", N_REF="absent", 				  	   DIST_MIN="absent",
+                          LINK_NUMBER="absent", N_REF="absent", 				  	   DIST_MIN="absent",
                           VAL_DIST = TRUE, DECAL = 0 )
-
+  
 {
-
+  
   # Check that the names of RELEVES and REF are the same:
   if(all.equal(names(RELEVES),
-               names(REF))!=TRUE){warning("Les deux tableaux n'ont pas les mêmes espèces...")}
-
+               names(REF))!=TRUE){warning("REF and RELEVES don't have the same variables")}
+  
   # Verification that the information of CHOICE NUMBER, N_REF and DIST_MIN coincide well:
-  if(CHOIX_NOMBRE!="N_REF" & CHOIX_NOMBRE!="DIST_MIN"){warning("La valeur de CHOIX_NOMBRE n'est pas correcte")}
-  if(CHOIX_NOMBRE=="N_REF" & N_REF=="absent"){warning("L'argument N_REF n'est pas renseigné")}
-  if(CHOIX_NOMBRE=="DIST_MIN" & DIST_MIN=="absent"){warning("L'argument DIST_MIN n'est pas renseigné")
-
-    # Verification that DIST_MIN is greater than the minimum distance for each RELEVES:
-    if(max(DISTANCES$DistRef_order[,1])>DIST_MIN){warning("DIST_MIN est trop faible et il n'y a pas une référence suffisamment proche pour chaque RELEVES")}
-
-    # Fusion of tables
-    Tableaux <- rbind(RELEVES,REF)
-
-    # NMDS analysis:
-    NMDS <- metaMDS(Tableaux, distance = METHOD)
-
-    # Display samples of RELEVES and REF
-    plot(NMDS$points, type="n", main="Choix des références en fonction
-         des conditions environnementales")
-    text(NMDS$points, labels = row.names(Tableaux),
-         col = c(rep(COUL_RELEVES, nrow(RELEVES)), rep(COUL_REF, nrow(REF))))
-    # Creation of the color palette if COUL_Seg_variable = TRUE:
-    if(COUL_Seg_variable==TRUE){
-      COUL_Seg <- colorRampPalette(colors=c("#0789e0","#9C093F","#9C0972","#91099C","#57099C","#26099C","#09199C","#09459C","#09819C","#099C8C","#099C5C","#099C26","#199C09","#4A9C09","#7B9C09","#9C9309","#9C6209","#9C3109","#9C0909"))(nrow(DISTANCES$RelRef_order))}else{COUL_Seg <- rep(COUL_Seg,nrow(DISTANCES$RelRef_order))
-      }
-
-    # Loop for each RELEVES:
-    for (j in 1:nrow(RELEVES))
-    {
-      # Coordinates of relevé:
-      Coo_REL <- NMDS$points[j,c(1:2)]
-
-      # If we choose to present a number of references:
-      if(CHOIX_NOMBRE=="N_REF"){
-        for(i in 1:N_REF)
-        {
-          Num_ref_proche <- c(1:nrow(REF))[row.names(REF)==DISTANCES$RelRef_order[j,i]]
-          Coo_REF <- NMDS$points[nrow(RELEVES)+Num_ref_proche,c(1:2)]
-          segments(x0 = Coo_REL[1], y0 = Coo_REL[2], x1 = Coo_REF[1],
-                   y1 = Coo_REF[2], col = COUL_Seg[j])
-          Dist_REF <- round(DISTANCES$DistRef_order[j,i],2)
-          if(VAL_DIST==TRUE){text(x = mean(c(Coo_REF[1],Coo_REL[1]))+Decalx,
-                                  y = mean(c(Coo_REF[2],Coo_REL[2]))+Decaly,
-                                  Dist_REF, col="Grey40", cex = 0.7)}
-        }
-      }
-
-      # If you choose a distance value for which to display the links:
-      if(CHOIX_NOMBRE=="DIST_MIN"){
-
-        # Number of REF with distance less than DIST_MIN:
-        N_REF <- length(which(DISTANCES$DistRef_order[1,]<DIST_MIN))
-        for(i in 1:N_REF)
-        {
-          Num_ref_proche <- c(1:nrow(REF))[row.names(REF)==DISTANCES$RelRef_order[j,i]]
-          Coo_REF <- NMDS$points[nrow(RELEVES)+Num_ref_proche,c(1:2)]
-          segments(x0 = Coo_REL[1], y0 = Coo_REL[2], x1 = Coo_REF[1],
-                   y1 = Coo_REF[2], col = COUL_Seg[j])
-          Dist_REF <- round(DISTANCES$DistRef_order[j,i],2)
-          if(VAL_DIST==TRUE){text(x = mean(c(Coo_REF[1],Coo_REL[1]))+Decalx,
-                                  y = mean(c(Coo_REF[2],Coo_REL[2]))+Decaly,
-                                  Dist_REF, col="Grey40", cex = 0.7)}
-        }
-      }
-
+  if(LINK_NUMBER!="N_REF" & LINK_NUMBER!="DIST_MIN"){warning("LINK_NUMBER is not correctly assigned")}
+  if(LINK_NUMBER=="N_REF" & N_REF=="absent"){warning("N_REF is not correctly assigned")}
+  if(LINK_NUMBER=="DIST_MIN" & DIST_MIN=="absent"){warning("DIST_MIN is not correctly assigned")}
+  
+  # Verification that DIST_MIN is greater than the minimum distance for each RELEVES:
+  if(max(DISTANCES$DistRef_order[,1])>DIST_MIN){warning("DIST_MIN is too low and there is no reference close enough for each RELEVES")}
+  
+  # Fusion of tables
+  Tableaux <- rbind(RELEVES,REF)
+  
+  # NMDS analysis:
+  NMDS <- metaMDS(Tableaux, distance = METHOD)
+  
+  # Display samples of RELEVES and REF
+  plot(NMDS$points, type="n", main="Choices of reference
+       with environmental conditions")
+  text(NMDS$points, labels = row.names(Tableaux),
+       col = c(rep(COUL_RELEVES, nrow(RELEVES)), rep(COUL_REF, nrow(REF))))
+  # Creation of the color palette if COUL_Seg_variable = TRUE:
+  if(COUL_Seg_variable==TRUE){
+    COUL_Seg <- colorRampPalette(colors=c("#0789e0","#9C093F","#9C0972","#91099C","#57099C","#26099C","#09199C","#09459C","#09819C","#099C8C","#099C5C","#099C26","#199C09","#4A9C09","#7B9C09","#9C9309","#9C6209","#9C3109","#9C0909"))(nrow(DISTANCES$RelRef_order))}else{COUL_Seg <- rep(COUL_Seg,nrow(DISTANCES$RelRef_order))
     }
+  
+  # Loop for each RELEVES:
+  for (j in 1:nrow(RELEVES))
+  {
+    # Coordinates of relevé:
+    Coo_REL <- NMDS$points[j,c(1:2)]
+    
+    # If we choose to present a number of references:
+    if(LINK_NUMBER=="N_REF"){
+      for(i in 1:N_REF)
+      {
+        Num_ref_proche <- c(1:nrow(REF))[row.names(REF)==DISTANCES$RelRef_order[j,i]]
+        Coo_REF <- NMDS$points[nrow(RELEVES)+Num_ref_proche,c(1:2)]
+        segments(x0 = Coo_REL[1], y0 = Coo_REL[2], x1 = Coo_REF[1],
+                 y1 = Coo_REF[2], col = COUL_Seg[j])
+        Dist_REF <- round(DISTANCES$DistRef_order[j,i],2)
+        if(VAL_DIST==TRUE){text(x = mean(c(Coo_REF[1],Coo_REL[1]))+DECAL,
+                                y = mean(c(Coo_REF[2],Coo_REL[2]))+DECAL,
+                                Dist_REF, col="Grey40", cex = 0.7)}
+      }
+    }
+    
+    # If you choose a distance value for which to display the links:
+    if(LINK_NUMBER=="DIST_MIN"){
+      
+      # Number of REF with distance less than DIST_MIN:
+      N_REF <- length(which(DISTANCES$DistRef_order[1,]<DIST_MIN))
+      for(i in 1:N_REF)
+      {
+        Num_ref_proche <- c(1:nrow(REF))[row.names(REF)==DISTANCES$RelRef_order[j,i]]
+        Coo_REF <- NMDS$points[nrow(RELEVES)+Num_ref_proche,c(1:2)]
+        segments(x0 = Coo_REL[1], y0 = Coo_REL[2], x1 = Coo_REF[1],
+                 y1 = Coo_REF[2], col = COUL_Seg[j])
+        Dist_REF <- round(DISTANCES$DistRef_order[j,i],2)
+        if(VAL_DIST==TRUE){text(x = mean(c(Coo_REF[1],Coo_REL[1]))+DECAL,
+                                y = mean(c(Coo_REF[2],Coo_REL[2]))+DECAL,
+                                Dist_REF, col="Grey40", cex = 0.7)}
+      }
+    }
+    
   }
 }
 
