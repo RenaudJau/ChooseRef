@@ -1,2 +1,2 @@
 # ChooseRef
-Functions for the Durbecq et al. paper about ecosystem references
+Functions for the Durbecq et al. paper (in prep) about ecosystem references
