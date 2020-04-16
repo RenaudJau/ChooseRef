@@ -67,12 +67,12 @@ So your data.frame should look something like:
 * Your restoration sites environmental data:
 ```{r echo=FALSE}
 library(knitr)
-kable(data.frame(dune.envRest))
+data.frame(dune.envRest)
 ```
 
 * Your potential references environmental data:
 ```{r echo=FALSE}
-kable(data.frame(dune.envRef))
+data.frame(dune.envRef)
 ```
 
 #### Calculating reference dissimilarities

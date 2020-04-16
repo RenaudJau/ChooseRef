@@ -1,12 +1,3 @@
----
-title: ""
-output: 
-  html_document:
-    keep_md: yes
-editor_options: 
-  chunk_output_type: console
----
-
 # ChooseRef
 Functions for the Durbecq et al. paper (in prep) about ecosystem references
 
@@ -71,33 +62,35 @@ So your data.frame should look something like:
 
 * Your restoration sites environmental data:
 
-           A1   Moisture   Manure
--------  ----  ---------  -------
-Rest 1    2.8          1        4
-Rest 2    3.5          1        2
-Rest 3    4.3          2        4
-Rest 4    4.2          2        4
-Rest 5    6.3          1        2
+```
+##         A1 Moisture Manure
+## Rest 1 2.8        1      4
+## Rest 2 3.5        1      2
+## Rest 3 4.3        2      4
+## Rest 4 4.2        2      4
+## Rest 5 6.3        1      2
+```
 
 * Your potential references environmental data:
 
-            A1   Moisture   Manure
--------  -----  ---------  -------
-Ref 1      4.3          1        2
-Ref 2      2.8          1        3
-Ref 3      4.2          5        3
-Ref 4      3.7          4        1
-Ref 5      3.3          2        1
-Ref 6      3.5          1        1
-Ref 7      5.8          4        2
-Ref 8      6.0          5        3
-Ref 9      9.3          5        0
-Ref 10    11.5          5        0
-Ref 11     5.7          5        3
-Ref 12     4.0          2        0
-Ref 13     4.6          1        0
-Ref 14     3.7          5        0
-Ref 15     3.5          5        0
+```
+##          A1 Moisture Manure
+## Ref 1   4.3        1      2
+## Ref 2   2.8        1      3
+## Ref 3   4.2        5      3
+## Ref 4   3.7        4      1
+## Ref 5   3.3        2      1
+## Ref 6   3.5        1      1
+## Ref 7   5.8        4      2
+## Ref 8   6.0        5      3
+## Ref 9   9.3        5      0
+## Ref 10 11.5        5      0
+## Ref 11  5.7        5      3
+## Ref 12  4.0        2      0
+## Ref 13  4.6        1      0
+## Ref 14  3.7        5      0
+## Ref 15  3.5        5      0
+```
 
 #### Calculating reference dissimilarities
 
@@ -148,56 +141,6 @@ Distances
 
 ```r
 Diss_Ref_Plot(RELEVES = dune.envRest, REF = dune.envRef, DISTANCES = Distances, LINK_NUMBER = "N_REF", N_REF = 3)
-```
-
-```
-## Wisconsin double standardization
-## Run 0 stress 0 
-## Run 1 stress 0.08464906 
-## Run 2 stress 9.922329e-05 
-## ... Procrustes: rmse 0.002397591  max resid 0.007459273 
-## ... Similar to previous best
-## Run 3 stress 9.756677e-05 
-## ... Procrustes: rmse 0.003090233  max resid 0.01150618 
-## Run 4 stress 9.895004e-05 
-## ... Procrustes: rmse 0.00227069  max resid 0.005824004 
-## ... Similar to previous best
-## Run 5 stress 9.844966e-05 
-## ... Procrustes: rmse 0.002864389  max resid 0.01019869 
-## Run 6 stress 9.914384e-05 
-## ... Procrustes: rmse 0.002394763  max resid 0.006688049 
-## ... Similar to previous best
-## Run 7 stress 9.829499e-05 
-## ... Procrustes: rmse 0.003154837  max resid 0.01168793 
-## Run 8 stress 0.08465458 
-## Run 9 stress 9.897608e-05 
-## ... Procrustes: rmse 0.003099266  max resid 0.01162378 
-## Run 10 stress 9.53039e-05 
-## ... Procrustes: rmse 0.002939981  max resid 0.0107298 
-## Run 11 stress 9.992179e-05 
-## ... Procrustes: rmse 0.002715703  max resid 0.009302149 
-## ... Similar to previous best
-## Run 12 stress 9.649792e-05 
-## ... Procrustes: rmse 0.002896972  max resid 0.01046257 
-## Run 13 stress 9.981622e-05 
-## ... Procrustes: rmse 0.00189532  max resid 0.003900071 
-## ... Similar to previous best
-## Run 14 stress 0.1025332 
-## Run 15 stress 9.893107e-05 
-## ... Procrustes: rmse 0.002903545  max resid 0.01043569 
-## Run 16 stress 9.810576e-05 
-## ... Procrustes: rmse 0.002869621  max resid 0.01027793 
-## Run 17 stress 9.327646e-05 
-## ... Procrustes: rmse 0.002013238  max resid 0.004024682 
-## ... Similar to previous best
-## Run 18 stress 9.945486e-05 
-## ... Procrustes: rmse 0.002669075  max resid 0.009363515 
-## ... Similar to previous best
-## Run 19 stress 8.549042e-05 
-## ... Procrustes: rmse 0.003083912  max resid 0.01150259 
-## Run 20 stress 9.72271e-05 
-## ... Procrustes: rmse 0.003094111  max resid 0.01143379 
-## *** Solution reached
 ```
 
 ![](README_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
