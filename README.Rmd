@@ -1,0 +1,90 @@
+---
+title: ""
+output: 
+  html_document:
+    keep_md: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+# ChooseRef
+Functions for the Durbecq et al. paper (in prep) about ecosystem references
+
+
+### How to install the package?
+
+If not yet installed, you should install `devtools`:
+
+```{r eval=FALSE}
+install.packages(devtools)
+```
+
+Load `devtools:
+
+```{r eval=FALSE}
+library(devtools) 
+```
+
+Install package `ChoosRef`:
+
+```{r eval=FALSE}
+install_github("RenaudJau/ChooseRef")
+```
+
+And load it:
+
+```{r}
+library(ChooseRef)
+```
+
+
+### How to use the functions?
+
+Here is an example with the `dune` dataset from `vegan` package :
+
+```{r message=FALSE}
+library(vegan)
+data("dune") #downloading of dune data (cf vegan)
+data("dune.env") #downloading of dune.env data (cf vegan)
+# keeping only the numeric variables :
+dune.env <- data.frame(A1 = dune.env$A1, 
+                       Moisture =  as.numeric(as.vector(dune.env$Moisture)),
+                       Manure = as.numeric(as.vector(dune.env$Manure)))
+                                          
+# Creating a vector indicating which plots are the potential references and which ones are the restored sites
+sites <- factor(c(rep("Rest",5),rep("Ref",15)))
+# Creating a vector with the plot names
+sites_names <- paste(sites,c(1:5,1:15))
+#Poviding names to rows (useful for the outputs)
+row.names(dune.env) <- sites_names
+row.names(dune) <- sites_names
+dune.envRest <- dune.env[sites=="Rest",]
+dune.envRef <- dune.env[sites=="Ref",]
+```
+
+So your data.frame should look something like:
+
+* Your restoration sites environmental data:
+```{r echo=FALSE}
+library(knitr)
+kable(data.frame(dune.envRest))
+```
+
+* Your potential references environmental data:
+```{r echo=FALSE}
+kable(data.frame(dune.envRef))
+```
+
+#### Calculating reference dissimilarities
+
+```{r}
+Distances <- DissRef3(RELEVES = dune.envRest, REF = dune.envRef, METHOD = "euclidean", DUPLICATES = FALSE)
+Distances
+```
+
+#### Plotting reference dissimilarities
+
+```{r warning=FALSE}
+Diss_Ref_Plot(RELEVES = dune.envRest, REF = dune.envRef, DISTANCES = Distances, LINK_NUMBER = "N_REF", N_REF = 3)
+```
+

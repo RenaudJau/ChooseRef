@@ -1,4 +1,6 @@
-########### Fonctions du package ChooseRef ######################
+########### Functions of ChooseRef package ######################
+
+
 
 #' Similarities between references and restoration
 #' 
@@ -14,6 +16,8 @@
 #' @return \item{Diss_Min}{minimal dissimilarity by RELEVES}
 #' @return \item{RelRef_order}{list of REF names in ascending order of dissimilarity for each RELEVES}
 #' @return \item{DistRef_order}{list of REF distance values in ascending order of dissimilarity for each RELEVES}
+#' 
+#' @export
 #' 
 #' @examples # ------------  Creating the data needed for the example --------------------
 #' library(vegan)
@@ -117,6 +121,8 @@ DissRef3 <- function (RELEVES, REF, METHOD = "bray", BINARY = FALSE, DUPLICATES 
 #' @param VAL_DIST Providing or not (TRUE by default) the distance value display
 #' @param DECAL Distance between the printing of the distance and the link
 #' 
+#' @export
+#' 
 #' @examples # ------------  Creating the data needed for the example --------------------
 #' library(vegan)
 #' data("dune") #downloading of dune data (cf vegan)
@@ -169,7 +175,7 @@ Diss_Ref_Plot <- function(RELEVES, REF, DISTANCES,
   Tableaux <- rbind(RELEVES,REF)
   
   # NMDS analysis:
-  NMDS <- metaMDS(Tableaux, distance = METHOD)
+  NMDS <- metaMDS(Tableaux, distance = METHOD, trace = FALSE)
   
   # Display samples of RELEVES and REF
   plot(NMDS$points, type="n", main="Choices of reference
